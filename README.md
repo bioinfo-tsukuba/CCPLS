@@ -2,7 +2,7 @@
 
 R package for estimating cell-cell communications from spatial transcriptome data with single-cell resolution.
 
-Please see preprint of CCPLS for details.
+Please see [preprint of CCPLS](https://www.biorxiv.org/content/10.1101/2022.01.12.476034v1) for details.
 
 ## Getting started
 
