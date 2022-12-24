@@ -2,13 +2,13 @@
 
 R package for estimating cell-cell communications from spatial transcriptome data with single-cell resolution.
 
-Please see [preprint of CCPLS](https://www.biorxiv.org/content/10.1101/2022.01.12.476034v1) for details.
+Please see [the paper of CCPLS](https://academic.oup.com/bioinformatics/article/38/21/4868/6692423) for details.
 
 ## Getting started
 
 ### Install
 
-Requirements: R version 4.2.0 or higher.
+Requirements: R version 4.2.0.
 
 ```
 # Install dependent packages
