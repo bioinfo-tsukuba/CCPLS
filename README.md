@@ -44,5 +44,11 @@ result_CCPLS <- CCPLS::cellCellReg(exp_mat, coord_mat, annot_mat, output_dir)
 
 <img src="https://user-images.githubusercontent.com/49115350/148733504-73c78ba4-b8d1-4c31-9026-925c827ae5cb.png" width="50%"><img src="https://user-images.githubusercontent.com/49115350/148733531-6943ef3e-ba43-466b-8177-c8cfb7f2e166.png" width="50%">
 
+## Citation
+
+If you use CCPLS please cite our paper:
+
+Tsuchiya, Takaho, Hiroki Hori, and Haruka Ozaki. 2022. “CCPLS Reveals Cell-Type-Specific Spatial Dependence of Transcriptomes in Single Cells.” Bioinformatics  38 (21): 4868–77. https://academic.oup.com/bioinformatics/article/38/21/4868/6692423
+
 ## License
 Copyright (c) 2022 Takaho Tsuchiya and Bioinformatics Laboratory, Faculty of Medicne, University of Tsukuba released under the [Artistic License 2.0](http://www.perlfoundation.org/artistic_license_2_0).
