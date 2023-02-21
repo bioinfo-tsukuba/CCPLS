@@ -31,7 +31,7 @@ devtools::install_github("bioinfo-tsukuba/CCPLS")
 load(system.file("extdata", "dataset.Rdata", package = "CCPLS"))
 output_dir <- "~/CCPLS_test"
 
-# Note that 400 cells were randomly extracted by Seq-Scope data (Cho et al., 2021), and this demonstration cannot be interpreted biologically.
+# Note that 400 cells (subcellular spots) were randomly extracted by Seq-Scope data (Cho et al., 2021), and this demonstration cannot be interpreted biologically.
 ```
 
 #### 2. Run CCPLS
