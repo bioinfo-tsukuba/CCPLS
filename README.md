@@ -8,8 +8,6 @@ Please see [the paper of CCPLS](https://academic.oup.com/bioinformatics/article/
 
 ### Install
 
-Requirements: R version 4.2.0 or higher.
-
 ```
 # Install dependent packages
 install.packages(c("cluster", "circlize", "dplyr", "pls", "purrr", "Seurat", "stringr"), dependencies = TRUE)
