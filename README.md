@@ -8,7 +8,7 @@ Please see [the paper of CCPLS](https://academic.oup.com/bioinformatics/article/
 
 ### Install
 
-Dependence: R version >= 3.5.0.
+Dependence: R version >= 4.2.0.
 
 ```
 # Install dependent packages
