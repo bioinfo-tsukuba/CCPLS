@@ -83,7 +83,7 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
       } else {
 
         sink(paste0(output_dir, "/cell_type_", cell_type_ind, "_heatmap.txt"))
-        print(paste0("No significant genes and neighboring cell types in ", res.sel.var$cell_type_list[[cell_type_ind]]))
+        print(paste0("No significant combinations of genes and neighboring cell types in ", res.sel.var$cell_type_list[[cell_type_ind]]))
         sink()
 
       }
