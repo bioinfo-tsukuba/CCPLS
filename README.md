@@ -21,7 +21,7 @@ install.packages("devtools", dependencies = TRUE)
 devtools::install_github("bioinfo-tsukuba/CCPLS")
  ```
 
-### Quick exmaple
+### Quick example
 
 #### 1. Prepare arguments for CCPLS
 
