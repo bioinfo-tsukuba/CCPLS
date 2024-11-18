@@ -16,12 +16,12 @@ buildModel <- function(data_4_pls,
   if (cv_opt == "CV"){
 
     if (is.null(component_num)){
-      res_pls <- plsr(gene ~ feature, data = data_4_pls,
+      res_pls <- pls::plsr(gene ~ feature, data = data_4_pls,
                       ncomp = qr(data_4_pls$feature)$rank,
                       scale = TRUE,
                       validation = "CV", segments = cv_num)
     } else {
-      res_pls <- plsr(gene ~ feature, data = data_4_pls,
+      res_pls <- pls::plsr(gene ~ feature, data = data_4_pls,
                       ncomp = component_num,
                       scale = TRUE,
                       validation = "CV", segments = cv_num)
@@ -36,12 +36,12 @@ buildModel <- function(data_4_pls,
   } else if (cv_opt == "LOOCV") {
 
     if (is.null(component_num)){
-      res_pls <- plsr(gene ~ feature, data = data_4_pls,
+      res_pls <- pls::plsr(gene ~ feature, data = data_4_pls,
                       ncomp = qr(data_4_pls$feature)$rank,
                       scale = TRUE,
                       validation = "LOO")
     } else {
-      res_pls <- plsr(gene ~ feature, data = data_4_pls,
+      res_pls <- pls::plsr(gene ~ feature, data = data_4_pls,
                       ncomp = component_num,
                       scale = TRUE,
                       validation = "LOO")
@@ -75,6 +75,7 @@ buildModel <- function(data_4_pls,
 #' @param dev_opt A string.
 #'
 #' @importFrom pls plsr
+#' @importFrom dplyr %>%
 #'
 cellCellRegEst <- function(fet_mat_orig,
                            annot_score_mat,
@@ -89,8 +90,6 @@ cellCellRegEst <- function(fet_mat_orig,
 
   start_time <- Sys.time()
   print(paste0("=== cellCellRegEst started... ", Sys.time(), " ==="))
-
-  library(pls)
 
   target_cell_type_index <- 0
   gene_list <- list()

@@ -3,8 +3,7 @@
 #' @param res.sel.var A list.
 #' @param output_dir A string.
 #'
-#' @importFrom dplyr %>%
-#' @importFrom igraph graph_from_incidence_matrix
+#' @importFrom igraph graph_from_biadjacency_matrix
 #' @importFrom igraph V
 #' @importFrom igraph E
 #' @importFrom grDevices png
@@ -54,7 +53,7 @@ cellCellRegGraph <- function(res.sel.var = res.sel.var,
         }
         rownames(plot_coef_mat_2) <- left_name
 
-        g <- igraph::graph_from_incidence_matrix(plot_coef_mat_2, weighted = T)
+        g <- igraph::graph_from_biadjacency_matrix(plot_coef_mat_2, weighted = T)
 
         # Set coordinate
         igraph::V(g)$x <- ifelse(names(igraph::V(g)) %in% right_name, 2, 0)
@@ -74,7 +73,7 @@ cellCellRegGraph <- function(res.sel.var = res.sel.var,
         vsz_2 <- 80 / nrow(plot_coef_mat_2)
         vlc <- 10 / max(nrow(plot_coef_mat_2), ncol(plot_coef_mat_2))
 
-        grDevices::png(paste0(output_dir, "/cell_type_", cell_type_ind, "_bipartite_graph.png"))
+        grDevices::png(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_bipartite_graph.png"))
         plot(g,
              vertex.color = "white",
              vertex.frame.color = "black",
@@ -85,7 +84,7 @@ cellCellRegGraph <- function(res.sel.var = res.sel.var,
              vertex.label.cex = vlc)
         grDevices::dev.off()
 
-        grDevices::pdf(paste0(output_dir, "/cell_type_", cell_type_ind, "_bipartite_graph.pdf"))
+        grDevices::pdf(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_bipartite_graph.pdf"))
         plot(g,
              vertex.color = "white",
              vertex.frame.color = "black",
@@ -98,7 +97,7 @@ cellCellRegGraph <- function(res.sel.var = res.sel.var,
 
       } else {
 
-        sink(paste0(output_dir, "/cell_type_", cell_type_ind, "_bipartite_graph.txt"))
+        sink(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_bipartite_graph.txt"))
         print(paste0("NULL returned in ", res.sel.var$cell_type_list[[cell_type_ind]]))
         sink()
 
@@ -106,7 +105,7 @@ cellCellRegGraph <- function(res.sel.var = res.sel.var,
 
     } else {
 
-      sink(paste0(output_dir, "/cell_type_", cell_type_ind, "_bipartite_graph.txt"))
+      sink(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_bipartite_graph.txt"))
       print(paste0("NULL returned in ", res.sel.var$cell_type_list[[cell_type_ind]]))
       sink()
 

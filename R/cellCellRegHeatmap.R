@@ -73,11 +73,11 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
                                           col = col_fun,
                                           cluster_rows = FALSE)
 
-        png(paste0(output_dir, "/cell_type_", cell_type_ind, "_heatmap.png"))
+        png(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_heatmap.png"))
         ComplexHeatmap::draw(coef_p)
         dev.off()
 
-        pdf(paste0(output_dir, "/cell_type_", cell_type_ind, "_heatmap.pdf"))
+        pdf(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_heatmap.pdf"))
         ComplexHeatmap::draw(coef_p)
         dev.off()
 
@@ -87,7 +87,7 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
 
         sig_coef_mat_2_list[[cell_type_ind]] <- NULL
         
-        sink(paste0(output_dir, "/cell_type_", cell_type_ind, "_heatmap.txt"))
+        sink(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_heatmap.txt"))
         print(paste0("NULL returned in ", res.sel.var$cell_type_list[[cell_type_ind]]))
         sink()
 
@@ -97,7 +97,7 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
 
       sig_coef_mat_2_list[[cell_type_ind]] <- NULL
       
-      sink(paste0(output_dir, "/cell_type_", cell_type_ind, "_heatmap.txt"))
+      sink(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_heatmap.txt"))
       print(paste0("NULL returned in ", res.sel.var$cell_type_list[[cell_type_ind]]))
       sink()
 

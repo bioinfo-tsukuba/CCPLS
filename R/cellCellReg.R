@@ -15,8 +15,6 @@ cellCellReg <- function(exp_mat,
                         output_dir,
                         HVG_extract_num = 2000){
 
-  library(dplyr)
-  
   if (!file.exists(output_dir)){
     dir.create(file.path(output_dir))
   }

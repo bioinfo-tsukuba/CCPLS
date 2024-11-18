@@ -5,6 +5,7 @@
 #'
 #' @importFrom stringr str_replace_all
 #' @importFrom stats dist
+#' @importFrom dplyr %>%
 #'
 cellCellRegMakeFet <- function(coord_mat = coord_mat,
                                annot_mat = annot_mat){
