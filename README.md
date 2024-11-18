@@ -8,8 +8,6 @@ Please see [the paper of CCPLS](https://academic.oup.com/bioinformatics/article/
 
 ### Install
 
-dependence: R version >= 4.1.1.
-
 ```
 # Install dependent packages
 install.packages(c("cluster", "circlize", "dplyr", "pls", "purrr", "Seurat", "stringr"), dependencies = TRUE)
@@ -59,7 +57,8 @@ result_CCPLS <- CCPLS::cellCellReg(exp_mat, coord_mat, annot_mat, output_dir, HV
 
 The outputs are stored in the ```output_dir```.
 
-<img src="https://user-images.githubusercontent.com/49115350/148733504-73c78ba4-b8d1-4c31-9026-925c827ae5cb.png" width="50%"><img src="https://user-images.githubusercontent.com/49115350/148733531-6943ef3e-ba43-466b-8177-c8cfb7f2e166.png" width="50%">
+![cell_type_Smooth Muscle_heatmap](https://github.com/user-attachments/assets/90f08c16-9098-4403-9325-6e7e6cae8226)![cell_type_Smooth Muscle_bipartite_graph](https://github.com/user-attachments/assets/f2e73591-012a-4ccc-8ccd-bf23dab156a2)
+
 
 ## Citation
 
