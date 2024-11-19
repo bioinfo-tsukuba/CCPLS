@@ -61,6 +61,8 @@ The outputs are stored in the ```output_dir```.
 
 ![cell_type_Smooth Muscle_heatmap](https://github.com/user-attachments/assets/90f08c16-9098-4403-9325-6e7e6cae8226)![cell_type_Smooth Muscle_bipartite_graph](https://github.com/user-attachments/assets/f2e73591-012a-4ccc-8ccd-bf23dab156a2)
 
+## Caution
+ - Please do not use "/" (slash) in cell type names.
 
 ## Citation
 
