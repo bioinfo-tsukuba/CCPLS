@@ -8,7 +8,7 @@ Please see [the paper of CCPLS](https://academic.oup.com/bioinformatics/article/
 
 ### Install
 
-R dependence: version 4.3.1 or higher
+R dependence: version 4.3.3 or higher
 
 ```
 # Install dependent packages
