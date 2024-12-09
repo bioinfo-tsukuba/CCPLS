@@ -13,7 +13,7 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
                                output_dir = output_dir){
 
   start_time <- Sys.time()
-  print(paste0("=== cellCellHeatmap started... ", Sys.time(), " ==="))
+  print(paste0("=== cellCellRegHeatmap started... ", Sys.time(), " ==="))
 
   cell_type_list <- res.sel.var$cell_type_list
   cell_type_num <- length(cell_type_list)

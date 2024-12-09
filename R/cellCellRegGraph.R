@@ -14,7 +14,7 @@ cellCellRegGraph <- function(res.sel.var = res.sel.var,
                              output_dir = output_dir){
 
   start_time <- Sys.time()
-  print(paste0("=== cellCellGraph started... ", Sys.time(), " ==="))
+  print(paste0("=== cellCellRegGraph started... ", Sys.time(), " ==="))
 
   ### Bipartite graph
 

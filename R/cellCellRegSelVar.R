@@ -159,7 +159,7 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
   
   
   start_time <- Sys.time()
-  print(paste0("=== cellCellSelVar started... ", Sys.time(), " ==="))
+  print(paste0("=== cellCellRegSelVar started... ", Sys.time(), " ==="))
 
   set.seed(123)
 
