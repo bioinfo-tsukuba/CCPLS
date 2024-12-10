@@ -244,7 +244,7 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
           if (!is.null(nrow(sig_coef_mat_non_zero[rowSums(sig_coef_mat_non_zero) != 0,]))){
             mat <- scale(t(sig_coef_mat_non_zero[rowSums(sig_coef_mat_non_zero) != 0,]))
           } else {
-            mat <- t(t(sig_coef_mat_non_zero[rowSums(sig_coef_mat_non_zero) != 0,]))
+            mat <- t(sig_coef_mat_non_zero[rowSums(sig_coef_mat_non_zero) != 0,])
             colnames(mat) <- rownames(sig_coef_mat_non_zero)[rowSums(sig_coef_mat_non_zero) != 0]
             mat <- scale(mat)
           }
