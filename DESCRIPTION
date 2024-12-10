@@ -1,6 +1,6 @@
 Package: CCPLS
 Title: CCPLS
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     person(given = "Takaho",
            family = "Tsuchiya",
