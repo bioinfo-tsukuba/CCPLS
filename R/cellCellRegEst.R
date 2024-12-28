@@ -54,7 +54,6 @@ buildModel <- function(data_4_pls,
               RMSE_cv_all_sum = RMSE_cv_all_sum))
 
 }
-
 #' Estimate PLS regression model
 #'
 #' @param fet_mat_orig A data frame.

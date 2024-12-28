@@ -63,7 +63,6 @@ sigCoef <- function(res.pls,
               sig_coef_mat_raw = sig_coef_mat_raw))
 
 }
-
 #' Get index of feature for deleting
 #'
 #' @param fet_mat_norm A data frame.
@@ -103,7 +102,6 @@ returnDelFetInd <- function(fet_mat_norm,
   return(del_fet_ind_vec)
 
 }
-
 #' Get index of gene for deleting
 #'
 #' @param exp_mat_norm A data frame.
@@ -138,7 +136,6 @@ returnDelGeneInd <- function(exp_mat_norm,
   return(del_gene_ind_vec)
 
 }
-
 #' Filter coefficient
 #'
 #' @param res.estimate A list.
