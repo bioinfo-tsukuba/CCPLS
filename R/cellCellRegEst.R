@@ -27,11 +27,8 @@ buildModel <- function(data_4_pls,
                       validation = "CV", segments = cv_num)
     }
 
-    RMSE_cv_all <- sqrt(res_pls$validation$PRESS / nrow(data_4_pls$feature))
-    RMSE_cv_all_sum <- colSums(RMSE_cv_all)
-
-    opt_comp <- RMSE_cv_all_sum[RMSE_cv_all_sum == min(RMSE_cv_all_sum)] %>% names()
-    opt_comp_num <- strsplit(opt_comp, split = " ")[[1]][1] %>% as.double()
+    RMSE_cv_all_sum <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
+    opt_comp_num <- as.double(which.min(RMSE_cv_all_sum))
 
   } else if (cv_opt == "LOOCV") {
 
@@ -47,17 +44,13 @@ buildModel <- function(data_4_pls,
                       validation = "LOO")
     }
 
-    RMSE_cv_all <- sqrt(res_pls$validation$PRESS / nrow(data_4_pls$feature))
-    RMSE_cv_all_sum <- colSums(RMSE_cv_all)
-
-    opt_comp <- RMSE_cv_all_sum[RMSE_cv_all_sum == min(RMSE_cv_all_sum)] %>% names()
-    opt_comp_num <- strsplit(opt_comp, split = " ")[[1]][1] %>% as.double()
-
+    RMSE_cv_all_sum <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
+    opt_comp_num <- as.double(which.min(RMSE_cv_all_sum))
+    
   }
 
   return(list(res_pls = res_pls,
               opt_comp_num = opt_comp_num,
-              RMSE_cv_all = RMSE_cv_all,
               RMSE_cv_all_sum = RMSE_cv_all_sum))
 
 }
