@@ -5,7 +5,7 @@ R package for estimating cell-cell communications from spatial transcriptome dat
 Please see [the paper of CCPLS](https://academic.oup.com/bioinformatics/article/38/21/4868/6692423) for details.
 
 ## Version
- - v1.0.2
+ - v1.0.3
 
 ## Getting started
 
