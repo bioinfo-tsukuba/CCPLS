@@ -27,8 +27,8 @@ buildModel <- function(data_4_pls,
                       validation = "CV", segments = cv_num)
     }
 
-    RMSE_cv_all_sum <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
-    opt_comp_num <- as.double(which.min(RMSE_cv_all_sum))
+    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
+    opt_comp_num <- as.double(which.min(RM_PRESS))
 
   } else if (cv_opt == "LOOCV") {
 
@@ -44,14 +44,14 @@ buildModel <- function(data_4_pls,
                       validation = "LOO")
     }
 
-    RMSE_cv_all_sum <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
-    opt_comp_num <- as.double(which.min(RMSE_cv_all_sum))
+    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
+    opt_comp_num <- as.double(which.min(RM_PRESS))
     
   }
 
   return(list(res_pls = res_pls,
               opt_comp_num = opt_comp_num,
-              RMSE_cv_all_sum = RMSE_cv_all_sum))
+              RM_PRESS = RM_PRESS))
 
 }
 #' Estimate PLS regression model
@@ -141,25 +141,30 @@ cellCellRegEst <- function(fet_mat_orig,
     data_4_pls$feature <- as.matrix(fet_mat_sep_rem_norm)
     data_4_pls$gene <- as.matrix(exp_mat_sep_norm)
     if(nrow(data_4_pls$feature) >= 10){
-
       tryCatch({
+        
         returned_value <- buildModel(data_4_pls = data_4_pls,
                                      cv_opt = c("CV", "LOOCV")[1],
                                      cv_num = 10)
-        CCPLS_result[[i]] <- list(paste0(self_cell_type_list[estimate_col_index[i]]),
-                                  returned_value)
         component_num_list[i] <- returned_value$opt_comp_num
-
+        returned_value2 <- list()
+        returned_value2$res_pls <- pls::plsr(gene ~ feature, data = data_4_pls, scale = TRUE,
+                                             ncomp = returned_value$opt_comp_num, validation = "none")
+        returned_value2$opt_comp_num <- returned_value$opt_comp_num
+        CCPLS_result[[i]] <- list(paste0(self_cell_type_list[estimate_col_index[i]]),
+                                  returned_value2)
+        
       }, error = function(e) {
+        
         returned_value <- NULL
         CCPLS_result[[i]] <- list(paste0("No model was built."),
                                   paste0("Model content is empty."))
+        
       })
 
       } else {
 
        returned_value <- NULL
-
        CCPLS_result[[i]] <- list(paste0("No model was built."),
                                  paste0("Model content is empty."))
 
