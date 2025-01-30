@@ -66,6 +66,7 @@ The outputs are stored in the ```output_dir```.
 
 ## Caution
  - Please do not use "/" (slash) in cell type names.
+ - Please ensure that the cell order in exp_mat, coord_mat, and annot_mat is identical.
 
 ## Citation
 
