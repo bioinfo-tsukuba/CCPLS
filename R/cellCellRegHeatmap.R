@@ -18,7 +18,7 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
   cell_type_list <- res.sel.var$cell_type_list
   cell_type_num <- length(cell_type_list)
   sig_coef_mat_2_list <- vector("list", length = cell_type_num)
-  
+
   for(cell_type_ind in 1:cell_type_num){
 
     # Judge model was built or not.
@@ -49,7 +49,7 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
           row_ft_sz <- 100 / 3
         }
 
-        set.seed("124")
+        set.seed(124)
         column_ha = ComplexHeatmap::HeatmapAnnotation(Cluster = as.character(gene_cluster_vec_2),
                                                       annotation_name_gp = grid::gpar(fontsize = 20))
         if (min_sig < 0 & max_sig > 0){
@@ -82,11 +82,11 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
         dev.off()
 
         sig_coef_mat_2_list[[cell_type_ind]] <- sig_coef_mat_2
-        
+
       } else {
 
         sig_coef_mat_2_list[[cell_type_ind]] <- NULL
-        
+
         sink(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_heatmap.txt"))
         print(paste0("NULL returned in ", res.sel.var$cell_type_list[[cell_type_ind]]))
         sink()
@@ -96,7 +96,7 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
     } else {
 
       sig_coef_mat_2_list[[cell_type_ind]] <- NULL
-      
+
       sink(paste0(output_dir, "/cell_type_", res.sel.var$cell_type_list[[cell_type_ind]], "_heatmap.txt"))
       print(paste0("NULL returned in ", res.sel.var$cell_type_list[[cell_type_ind]]))
       sink()

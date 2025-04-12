@@ -15,6 +15,8 @@ cellCellReg <- function(exp_mat,
                         output_dir,
                         HVG_extract_num = 2000){
 
+  set.seed(123)
+
   if (!file.exists(output_dir)){
     dir.create(file.path(output_dir))
   }
@@ -58,7 +60,7 @@ cellCellReg <- function(exp_mat,
   res.graph <- cellCellRegGraph(res.sel.var = res.sel.var,
                                 output_dir = output_dir)
 
-  
+
   return(list(res.make.features = res.make.features,
               res.sep.mat = res.sep.mat,
               res.estimate = res.estimate,

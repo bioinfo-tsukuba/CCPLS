@@ -95,8 +95,9 @@ returnDelFetInd <- function(fet_mat_norm,
   del_fet_bin <- rep(1, fet_num) * (fet_q_vec >= p_value_thresh)
 
   for (fet_ind in 1:fet_num){
-    if (del_fet_bin[fet_ind] == 1)
-    del_fet_ind_vec <- c(del_fet_ind_vec, fet_ind)
+    if (del_fet_bin[fet_ind] == 1){
+     del_fet_ind_vec <- c(del_fet_ind_vec, fet_ind)
+    }
   }
 
   return(del_fet_ind_vec)
@@ -129,8 +130,9 @@ returnDelGeneInd <- function(exp_mat_norm,
   del_gene_bin <- rep(1, gene_num) * (gene_q_vec >= p_value_thresh)
 
   for (gene_ind in 1:gene_num){
-    if (del_gene_bin[gene_ind] == 1)
+    if (del_gene_bin[gene_ind] == 1){
       del_gene_ind_vec <- c(del_gene_ind_vec, gene_ind)
+    }
   }
 
   return(del_gene_ind_vec)
@@ -153,8 +155,8 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
                               res.sep.mat = res.sep.mat,
                               HVG_extract_num = HVG_extract_num,
                               dev_opt = dev_opt){
-  
-  
+
+
   start_time <- Sys.time()
   print(paste0("=== cellCellRegSelVar started... ", Sys.time(), " ==="))
 
@@ -245,7 +247,7 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
             colnames(mat) <- rownames(sig_coef_mat_non_zero)[rowSums(sig_coef_mat_non_zero) != 0]
             mat <- scale(mat)
           }
-                 
+
           k.max <- 15
           if ((nrow(mat) - 1) < 15){
             k.max <- nrow(mat) - 1
@@ -254,7 +256,7 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
           if (k.max == 1){
             k.max <- 2
           }
-          
+
           sil_width <- purrr::map_dbl(2:k.max,  function(k){
             model <- cluster::pam(x = mat, k = k)
             model$silinfo$avg.width

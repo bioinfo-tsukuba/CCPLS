@@ -5,7 +5,6 @@
 #'
 #' @importFrom stringr str_replace_all
 #' @importFrom stats dist
-#' @importFrom dplyr %>%
 #'
 cellCellRegMakeFet <- function(coord_mat = coord_mat,
                                annot_mat = annot_mat){
@@ -18,7 +17,6 @@ cellCellRegMakeFet <- function(coord_mat = coord_mat,
   dist_mat <- as.matrix(stats::dist(coord_mat[,c(2,3)]))
   colnames(dist_mat) <- seq(1:ncol(dist_mat))
   rownames(dist_mat) <- seq(1:nrow(dist_mat))
-  diag(dist_mat) <- 1000000
 
   ident_cell_type <- unique(annot_mat[,2])[order(unique(annot_mat[,2]))]
 
@@ -38,7 +36,7 @@ cellCellRegMakeFet <- function(coord_mat = coord_mat,
 
   colnames(fet_mat) <- colnames_list
 
-  dist0 <- dist_mat %>% min()
+  dist0 <- min(dist_mat[dist_mat > 0])
   print(paste0("dist0 is... ", round(dist0, digits = 2)))
 
   neig_col_start <- cell_type_num + 1
@@ -49,6 +47,7 @@ cellCellRegMakeFet <- function(coord_mat = coord_mat,
   fet_mat[, 1:cell_type_num] <- annot_score_mat
 
   dist_weight_mat <- exp( - dist_mat / dist0)
+  diag(dist_weight_mat) <- 0
 
   fet_mat[, neig_col_start:neig_col_end] <-
     fet_mat[, neig_col_start:neig_col_end] + dist_weight_mat %*% annot_score_mat
