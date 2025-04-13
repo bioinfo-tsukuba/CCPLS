@@ -222,11 +222,11 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
       sig_coef_mat_bin_2[, non_sig_gene_col] <- 0
       sig_coef_mat_bin_2[non_sig_fet_row, ] <- 0
 
-      sig_coef_mat_bin_2_non_zero <- sig_coef_mat_bin_2[, colSums(sig_coef_mat_bin_2) != 0]
+      sig_coef_mat_bin_2_non_zero <- sig_coef_mat_bin_2[, colSums(abs(sig_coef_mat_bin_2)) != 0]
 
       sig_coef_mat[sig_coef_mat_bin_2 == 0] <- 0
       sig_coef_mat_with_zero_list[[cell_type_ind]] <- sig_coef_mat
-      sig_coef_mat_non_zero <- sig_coef_mat[, colSums(sig_coef_mat_bin_2) != 0]
+      sig_coef_mat_non_zero <- sig_coef_mat[, colSums(abs(sig_coef_mat_bin_2)) != 0]
       # zero_gene_num <- ncol(sig_coef_mat) - ncol(sig_coef_mat_non_zero)
 
       sig_coef_mat_non_zero_list[[cell_type_ind]] <- sig_coef_mat_non_zero
@@ -240,11 +240,11 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
 
           set.seed(123)
 
-          if (!is.null(nrow(sig_coef_mat_non_zero[rowSums(sig_coef_mat_non_zero) != 0,]))){
-            mat <- scale(t(sig_coef_mat_non_zero[rowSums(sig_coef_mat_non_zero) != 0,]))
+          if (!is.null(nrow(sig_coef_mat_non_zero[rowSums(abs(sig_coef_mat_non_zero)) != 0,]))){
+            mat <- scale(t(sig_coef_mat_non_zero[rowSums(abs(sig_coef_mat_non_zero)) != 0,]))
           } else {
-            mat <- t(sig_coef_mat_non_zero[rowSums(sig_coef_mat_non_zero) != 0,])
-            colnames(mat) <- rownames(sig_coef_mat_non_zero)[rowSums(sig_coef_mat_non_zero) != 0]
+            mat <- t(sig_coef_mat_non_zero[rowSums(abs(sig_coef_mat_non_zero)) != 0,])
+            colnames(mat) <- rownames(sig_coef_mat_non_zero)[rowSums(abs(sig_coef_mat_non_zero)) != 0]
             mat <- scale(mat)
           }
 
@@ -326,11 +326,11 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
         sig_coef_mat_non_zero_ordered <- sig_coef_mat_non_zero_list[[cell_type_ind]][, order(gene_cluster_vec)]
 
         # Remove zero feature
-        if (sum(rowSums(sig_coef_mat_non_zero_ordered) != 0) > 1){
-          sig_coef_mat <- sig_coef_mat_non_zero_ordered[rowSums(sig_coef_mat_non_zero_ordered) != 0, ]
+        if (sum(rowSums(abs(sig_coef_mat_non_zero_ordered)) != 0) > 1){
+          sig_coef_mat <- sig_coef_mat_non_zero_ordered[rowSums(abs(sig_coef_mat_non_zero_ordered)) != 0, ]
         } else {
-          sig_coef_mat <- t(sig_coef_mat_non_zero_ordered[rowSums(sig_coef_mat_non_zero_ordered) != 0, ])
-          rownames(sig_coef_mat) <- rownames(sig_coef_mat_non_zero_ordered)[rowSums(sig_coef_mat_non_zero_ordered) != 0]
+          sig_coef_mat <- t(sig_coef_mat_non_zero_ordered[rowSums(abs(sig_coef_mat_non_zero_ordered)) != 0, ])
+          rownames(sig_coef_mat) <- rownames(sig_coef_mat_non_zero_ordered)[rowSums(abs(sig_coef_mat_non_zero_ordered)) != 0]
         }
 
         row_name_rm <- c()
