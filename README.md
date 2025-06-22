@@ -62,7 +62,7 @@ result_CCPLS <- CCPLS::cellCellReg(exp_mat, coord_mat, annot_mat, output_dir, HV
 
 The outputs are stored in the ```output_dir```.
 
-![cell_type_Smooth Muscle_heatmap](https://github.com/user-attachments/assets/90f08c16-9098-4403-9325-6e7e6cae8226)![cell_type_Smooth Muscle_bipartite_graph](https://github.com/user-attachments/assets/f2e73591-012a-4ccc-8ccd-bf23dab156a2)
+![cell_type_B cell-IgA_heatmap](https://github.com/user-attachments/assets/03644eeb-52ff-4f20-9101-1a3467ac96eb)![cell_type_B cell-IgA_bipartite_graph](https://github.com/user-attachments/assets/11145ff4-be33-436a-81bb-c43360cd75b3)
 
 ## Caution
  - Please do not use "/" (slash) in cell type names.
