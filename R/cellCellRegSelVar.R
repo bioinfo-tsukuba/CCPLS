@@ -22,10 +22,11 @@ sigCoef <- function(res.pls,
   ## Calculate sig_coef_mat
 
   # Declare sig_coef_mat
-  sig_coef_mat <- matrix(0, nrow = nrow(res_pls$coefficient[,,1]),
+  sig_coef_mat <- matrix(0, nrow = nrow(res_pls$coefficients[,,1]),
                          ncol = ncol(res_pls$coefficients[,,1]))
-  rownames(sig_coef_mat) <- rownames(res_pls$coefficient[,,1])
-  colnames(sig_coef_mat) <- colnames(res_pls$coefficient[,,1])
+
+  rownames(sig_coef_mat) <- rownames(res_pls$coefficients[,,1])
+  colnames(sig_coef_mat) <- colnames(res_pls$coefficients[,,1])
   sig_coef_mat_raw <- sig_coef_mat
 
   # Add each component
@@ -41,13 +42,15 @@ sigCoef <- function(res.pls,
     del_fet_ind_vec <- returnDelFetInd(fet_mat_norm = fet_mat_norm,
                                        x_score_mat = x_score_mat,
                                        calc_comp_num = calc_comp_ind,
-                                       p_value_thresh = p_value_thresh)
+                                       p_value_thresh = p_value_thresh,
+                                       sig_coef_mat_comp_raw = sig_coef_mat_comp_raw)
 
     # Extract non-significant genes
     del_gene_ind_vec <- returnDelGeneInd(exp_mat_norm = exp_mat_norm,
                                          y_score_mat = y_score_mat,
                                          calc_comp_num = calc_comp_ind,
-                                         p_value_thresh = p_value_thresh)
+                                         p_value_thresh = p_value_thresh,
+                                         sig_coef_mat_comp_raw = sig_coef_mat_comp_raw)
 
     # Replace non-significant value with 0
     sig_coef_mat_comp <- sig_coef_mat_comp_raw
@@ -63,98 +66,103 @@ sigCoef <- function(res.pls,
               sig_coef_mat_raw = sig_coef_mat_raw))
 
 }
+
 #' Get index of feature for deleting
 #'
-#' @param fet_mat_norm A data frame.
-#' @param x_score_mat A data frame.
+#' @param fet_mat_norm A matrix.
+#' @param x_score_mat A marix.
 #' @param calc_comp_num A number.
 #' @param p_value_thresh A number.
+#' @param sig_coef_mat_comp_raw A matrix.
 #'
 #' @importFrom stats cor.test
+#' @importFrom stats na.omit
 #'
 returnDelFetInd <- function(fet_mat_norm,
                             x_score_mat,
                             calc_comp_num,
-                            p_value_thresh){
+                            p_value_thresh,
+                            sig_coef_mat_comp_raw){
 
-  # Remove self
-  self_col_ind <- grep("self", colnames(fet_mat_norm))
-  fet_mat_norm2 <- fet_mat_norm[, -self_col_ind]
+  # 1) self 列を落とす
+  is_self <- grepl("^self", colnames(fet_mat_norm))
+  fet2 <- fet_mat_norm[, !is_self, drop = FALSE]
 
-  fet_p_vec <- c()
-  del_fet_ind_vec <- c()
+  # 2) 各列ごとに p-value を計算
+  feature_p_vec <- apply(fet2, 2, function(feature_col) {
+    stats::cor.test(feature_col, x_score_mat[, calc_comp_num])$p.value
+  })
 
-  fet_num <- ncol(fet_mat_norm2)
+  # 3) Benjamini–Hochberg 補正で q 値を得る
+  feature_q_vec <- stats::p.adjust(feature_p_vec, method = "BH")
 
-  for (fet_ind in 1:fet_num){
-    fet_p_value <- stats::cor.test(fet_mat_norm2[, fet_ind], x_score_mat[, calc_comp_num])$p.value
-    fet_p_vec <- append(fet_p_vec, fet_p_value)
-  }
+  # 4) 非有意と判定された特徴量名を取得
+  del_feature_names <- names(feature_q_vec)[feature_q_vec >= p_value_thresh]
 
-  fet_q_vec <- stats::p.adjust(fet_p_vec, method = "BH")
-  del_fet_bin <- rep(1, fet_num) * (fet_q_vec >= p_value_thresh)
-
-  for (fet_ind in 1:fet_num){
-    if (del_fet_bin[fet_ind] == 1){
-     del_fet_ind_vec <- c(del_fet_ind_vec, fet_ind)
-    }
-  }
+  # 5) 削除する番号を返す
+  all_features <- rownames(sig_coef_mat_comp_raw)
+  del_fet_ind_vec <- match(del_feature_names, all_features)
+  del_fet_ind_vec <- unique(na.omit(del_fet_ind_vec))
 
   return(del_fet_ind_vec)
-
 }
+
 #' Get index of gene for deleting
 #'
 #' @param exp_mat_norm A data frame.
 #' @param y_score_mat A data frame.
 #' @param calc_comp_num A number.
 #' @param p_value_thresh A number.
+#' @param sig_coef_mat_comp_raw A matrix.
 #'
 #' @importFrom stats cor.test
+#' @importFrom stats na.omit
 #'
 returnDelGeneInd <- function(exp_mat_norm,
                              y_score_mat,
                              calc_comp_num,
-                             p_value_thresh){
-  gene_p_vec <- c()
-  del_gene_ind_vec <- c()
+                             p_value_thresh,
+                             sig_coef_mat_comp_raw){
 
-  gene_num <- ncol(exp_mat_norm)
+  # 1) 各遺伝子ごとに p-value を一括取得
+  gene_p_vec <- apply(exp_mat_norm, 2, function(gene_col) {
+    stats::cor.test(gene_col, y_score_mat[, calc_comp_num])$p.value
+  })
 
-  for (gene_ind in 1:gene_num){
-    gene_p_value <- stats::cor.test(exp_mat_norm[, gene_ind], y_score_mat[, calc_comp_num])$p.value
-    gene_p_vec <- append(gene_p_vec, gene_p_value)
-  }
-
+  # 2) Benjamini–Hochberg 補正で q 値を得る
   gene_q_vec <- stats::p.adjust(gene_p_vec, method = "BH")
-  del_gene_bin <- rep(1, gene_num) * (gene_q_vec >= p_value_thresh)
 
-  for (gene_ind in 1:gene_num){
-    if (del_gene_bin[gene_ind] == 1){
-      del_gene_ind_vec <- c(del_gene_ind_vec, gene_ind)
-    }
-  }
+  # 3) 非有意と判定された遺伝子名を取得
+  del_gene_names <- names(gene_q_vec)[gene_q_vec >= p_value_thresh]
+
+  # 4) sig_coef_mat_comp_raw の列名ベースでマッチ
+  all_genes <- colnames(sig_coef_mat_comp_raw)
+  del_gene_ind_vec <- match(del_gene_names, all_genes)
+  del_gene_ind_vec <- unique(na.omit(del_gene_ind_vec))
 
   return(del_gene_ind_vec)
 
 }
+
 #' Filter coefficient
 #'
 #' @param res.estimate A list.
 #' @param res.sep.mat A list.
 #' @param HVG_extract_num A number.
-#' @param dev_opt A string.
+#' @param dev_opt A string. Default is "kmeans".
 #'
+#' @importFrom stats sd
 #' @importFrom purrr map_dbl
 #' @importFrom cluster pam
 #' @importFrom stats ecdf
 #' @importFrom stats p.adjust
 #' @importFrom stats kmeans
+#' @importFrom stats median
 #'
 cellCellRegSelVar <- function(res.estimate = res.estimate,
-                              res.sep.mat = res.sep.mat,
-                              HVG_extract_num = HVG_extract_num,
-                              dev_opt = dev_opt){
+                                  res.sep.mat = res.sep.mat,
+                                  HVG_extract_num = HVG_extract_num,
+                                  dev_opt = "kmeans"){
 
 
   start_time <- Sys.time()
@@ -190,10 +198,7 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
       sig_coef_mat <- res.sig.coef$sig_coef_mat
       sig_coef_mat_raw <- res.sig.coef$sig_coef_mat_raw
 
-      non_sig_gene_col <- colnames(sig_coef_mat)[apply(sig_coef_mat, 2, sum) == 0]
-      sig_gene_col <- colnames(sig_coef_mat)[apply(sig_coef_mat, 2, sum) != 0]
-      non_sig_fet_row <- rownames(sig_coef_mat)[apply(sig_coef_mat, 1, sum) == 0]
-      sig_fet_row <- rownames(sig_coef_mat)[apply(sig_coef_mat, 1, sum) != 0]
+      non_sig_fet_row <- which(rowSums(abs(sig_coef_mat)) == 0)
 
       sig_coef_mat_bin <- matrix(0, nrow(sig_coef_mat), ncol(sig_coef_mat))
       rownames(sig_coef_mat_bin) <- rownames(sig_coef_mat)
@@ -201,25 +206,61 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
 
       for (fet_id in 1:nrow(sig_coef_mat)){
 
-        if (length(non_sig_gene_col) != 0){
-          null_dist_fet <- stats::ecdf(sig_coef_mat_raw[fet_id, non_sig_gene_col])
-          fet_p_vec <- 1 - null_dist_fet(sig_coef_mat_raw[fet_id,])
-          names(fet_p_vec) <- colnames(sig_coef_mat_raw)
+        non_sig_gene_col <- colnames(sig_coef_mat)[sig_coef_mat[fet_id, ] == 0]
+        obs_vals <- sig_coef_mat[fet_id, ]
 
-          fet_q_vec <- stats::p.adjust(fet_p_vec, method = "BH")
+        if (length(non_sig_gene_col) >= 2) {
 
-          sig_coef_vec_fet <- sig_coef_mat[fet_id,]
-          sig_plus_flag <- fet_q_vec < 0.05 & sig_coef_vec_fet > 0
-          sig_minus_flag <- fet_q_vec < 0.05 & sig_coef_vec_fet < 0
+          null_vals <- sig_coef_mat_raw[fet_id, non_sig_gene_col]
+
+          if (sd(null_vals, na.rm = TRUE) > 0) {
+            # null_vals の分散が正である場合
+            center <- median(null_vals)
+            gene_p_vec_2 <- sapply(obs_vals, function(x) {
+              mean(abs(null_vals - center) >= abs(x - center))
+            })
+
+            names(gene_p_vec_2) <- colnames(sig_coef_mat)
+
+            gene_q_vec_2 <- stats::p.adjust(gene_p_vec_2, method = "BH")
+
+            sig_coef_vec_fet <- sig_coef_mat[fet_id, ]
+            sig_plus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet > 0
+            sig_minus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet < 0
+
+            sig_coef_mat_bin[fet_id, sig_plus_flag] <- 1
+            sig_coef_mat_bin[fet_id, sig_minus_flag] <- -1
+            sig_coef_mat_bin[fet_id, non_sig_gene_col] <- 0
+
+          } else {
+            # sdがゼロの場合
+            gene_q_vec_2 <- rep(0, length(obs_vals))
+            names(gene_q_vec_2) <- colnames(sig_coef_mat_raw)
+
+            sig_coef_vec_fet <- sig_coef_mat[fet_id, ]
+            sig_plus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet > 0
+            sig_minus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet < 0
+
+            sig_coef_mat_bin[fet_id, sig_plus_flag] <- 1
+            sig_coef_mat_bin[fet_id, sig_minus_flag] <- -1
+            sig_coef_mat_bin[fet_id, non_sig_gene_col] <- 0
+          }
+
+        } else if (length(non_sig_gene_col) < 2){
+          gene_q_vec_2 <- rep(0, length(obs_vals))
+          names(gene_q_vec_2) <- colnames(sig_coef_mat_raw)
+
+          sig_coef_vec_fet <- sig_coef_mat[fet_id, ]
+          sig_plus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet > 0
+          sig_minus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet < 0
+
           sig_coef_mat_bin[fet_id, sig_plus_flag] <- 1
           sig_coef_mat_bin[fet_id, sig_minus_flag] <- -1
-
+          sig_coef_mat_bin[fet_id, non_sig_gene_col] <- 0
         }
-
       }
 
       sig_coef_mat_bin_2 <- sig_coef_mat_bin
-      sig_coef_mat_bin_2[, non_sig_gene_col] <- 0
       sig_coef_mat_bin_2[non_sig_fet_row, ] <- 0
 
       sig_coef_mat_bin_2_non_zero <- sig_coef_mat_bin_2[, colSums(abs(sig_coef_mat_bin_2)) != 0]
@@ -265,29 +306,6 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
           cluster_num <- which.max(sil_width) + 1
           res.kmeans <- stats::kmeans(mat, cluster_num)
           gene_cluster_vec <- res.kmeans$cluster
-          gene_cluster_vec_list[[cell_type_ind]] <- gene_cluster_vec
-
-        } else if (dev_opt == "binary"){
-
-          gene_bin_vec_list <- vector("list", ncol(sig_coef_mat_bin_2_non_zero))
-          for (gene_id in 1:ncol(sig_coef_mat_bin_2_non_zero)){
-            gene_bin_vec_list[[gene_id]] <- as.character(sig_coef_mat_bin_2_non_zero[,gene_id])
-          }
-
-          cluster_list <- unique(gene_bin_vec_list)
-          cluster_num <- length(cluster_list)
-
-          gene_cluster_vec <- c()
-          for (cluster_id in 1:cluster_num){
-            for (gene_id in 1:length(gene_bin_vec_list)){
-              judge_flag <- nrow(sig_coef_mat_bin_2) == sum(gene_bin_vec_list[[gene_id]] == cluster_list[[cluster_id]])
-              if (judge_flag){
-                gene_cluster_vec <- append(gene_cluster_vec, cluster_id)
-              }
-            }
-          }
-
-          names(gene_cluster_vec) <- colnames(sig_coef_mat_bin_2_non_zero)
           gene_cluster_vec_list[[cell_type_ind]] <- gene_cluster_vec
 
         }
@@ -355,7 +373,6 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
     }
 
   }
-
 
   finish_time <- Sys.time()
   print(paste0("=== cellCellRegSelVar finished... ", Sys.time(), " ==="))

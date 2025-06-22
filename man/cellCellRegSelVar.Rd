@@ -8,7 +8,7 @@ cellCellRegSelVar(
   res.estimate = res.estimate,
   res.sep.mat = res.sep.mat,
   HVG_extract_num = HVG_extract_num,
-  dev_opt = dev_opt
+  dev_opt = "kmeans"
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ cellCellRegSelVar(
 
 \item{HVG_extract_num}{A number.}
 
-\item{dev_opt}{A string.}
+\item{dev_opt}{A string. Default is "kmeans".}
 }
 \description{
 Filter coefficient

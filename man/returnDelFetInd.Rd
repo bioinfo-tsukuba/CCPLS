@@ -4,16 +4,24 @@
 \alias{returnDelFetInd}
 \title{Get index of feature for deleting}
 \usage{
-returnDelFetInd(fet_mat_norm, x_score_mat, calc_comp_num, p_value_thresh)
+returnDelFetInd(
+  fet_mat_norm,
+  x_score_mat,
+  calc_comp_num,
+  p_value_thresh,
+  sig_coef_mat_comp_raw
+)
 }
 \arguments{
-\item{fet_mat_norm}{A data frame.}
+\item{fet_mat_norm}{A matrix.}
 
-\item{x_score_mat}{A data frame.}
+\item{x_score_mat}{A marix.}
 
 \item{calc_comp_num}{A number.}
 
 \item{p_value_thresh}{A number.}
+
+\item{sig_coef_mat_comp_raw}{A matrix.}
 }
 \description{
 Get index of feature for deleting

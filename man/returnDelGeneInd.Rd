@@ -4,7 +4,13 @@
 \alias{returnDelGeneInd}
 \title{Get index of gene for deleting}
 \usage{
-returnDelGeneInd(exp_mat_norm, y_score_mat, calc_comp_num, p_value_thresh)
+returnDelGeneInd(
+  exp_mat_norm,
+  y_score_mat,
+  calc_comp_num,
+  p_value_thresh,
+  sig_coef_mat_comp_raw
+)
 }
 \arguments{
 \item{exp_mat_norm}{A data frame.}
@@ -14,6 +20,8 @@ returnDelGeneInd(exp_mat_norm, y_score_mat, calc_comp_num, p_value_thresh)
 \item{calc_comp_num}{A number.}
 
 \item{p_value_thresh}{A number.}
+
+\item{sig_coef_mat_comp_raw}{A matrix.}
 }
 \description{
 Get index of gene for deleting

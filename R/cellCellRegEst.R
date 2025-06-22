@@ -27,7 +27,9 @@ buildModel <- function(data_4_pls,
                       validation = "CV", segments = cv_num)
     }
 
-    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
+    n_samples <- nrow(data_4_pls$feature)  # サンプル数
+    n_genes <- ncol(data_4_pls$gene)     # 応答変数数（遺伝子数）
+    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / (n_samples * n_genes))
     opt_comp_num <- as.double(which.min(RM_PRESS))
 
   } else if (cv_opt == "LOOCV") {
@@ -44,9 +46,11 @@ buildModel <- function(data_4_pls,
                       validation = "LOO")
     }
 
-    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / nrow(data_4_pls$feature))
+    n_samples <- nrow(data_4_pls$feature)  # サンプル数
+    n_genes <- ncol(data_4_pls$gene)     # 応答変数数（遺伝子数）
+    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / (n_samples * n_genes))
     opt_comp_num <- as.double(which.min(RM_PRESS))
-    
+
   }
 
   return(list(res_pls = res_pls,
@@ -142,7 +146,7 @@ cellCellRegEst <- function(fet_mat_orig,
     data_4_pls$gene <- as.matrix(exp_mat_sep_norm)
     if(nrow(data_4_pls$feature) >= 10){
       tryCatch({
-        
+
         returned_value <- buildModel(data_4_pls = data_4_pls,
                                      cv_opt = c("CV", "LOOCV")[1],
                                      cv_num = 10)
@@ -153,13 +157,13 @@ cellCellRegEst <- function(fet_mat_orig,
         returned_value2$opt_comp_num <- returned_value$opt_comp_num
         CCPLS_result[[i]] <- list(paste0(self_cell_type_list[estimate_col_index[i]]),
                                   returned_value2)
-        
+
       }, error = function(e) {
-        
+
         returned_value <- NULL
         CCPLS_result[[i]] <- list(paste0("No model was built."),
                                   paste0("Model content is empty."))
-        
+
       })
 
       } else {

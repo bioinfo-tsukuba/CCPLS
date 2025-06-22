@@ -52,14 +52,8 @@ cellCellRegHeatmap <- function(res.sel.var = res.sel.var,
         set.seed(124)
         column_ha = ComplexHeatmap::HeatmapAnnotation(Cluster = as.character(gene_cluster_vec_2),
                                                       annotation_name_gp = grid::gpar(fontsize = 20))
-        if (min_sig < 0 & max_sig > 0){
-          col_fun = circlize::colorRamp2(c(min_sig, 0, max_sig), c("blue", "gray", "red"))
-        } else if (min_sig >= 0 & max_sig >= 0){
-          col_fun = circlize::colorRamp2(c(min_sig, max_sig), c("gray", "red"))
-        } else if (min_sig <= 0 & max_sig <= 0){
-          col_fun = circlize::colorRamp2(c(min_sig, max_sig), c("blue", "gray"))
-        }
-
+        abs_max <- max(abs(sig_coef_mat_2))
+        col_fun <- circlize::colorRamp2(c(-abs_max, 0, abs_max), c("blue", "gray", "red"))
         coef_p <- ComplexHeatmap::Heatmap(sig_coef_mat_2,
                                           name = "Coefficient",
                                           cluster_columns = FALSE,
