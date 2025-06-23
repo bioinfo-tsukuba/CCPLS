@@ -217,7 +217,7 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
             # null_vals の分散が正である場合
             center <- median(null_vals)
             gene_p_vec_2 <- sapply(obs_vals, function(x) {
-              mean(abs(null_vals - center) >= abs(x - center))
+              (sum(abs(null_vals - center) >= abs(x - center)) + 1) / (length(null_vals) + 1)
             })
 
             names(gene_p_vec_2) <- colnames(sig_coef_mat)
@@ -284,8 +284,10 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
           if (!is.null(nrow(sig_coef_mat_non_zero[rowSums(abs(sig_coef_mat_non_zero)) != 0,]))){
             mat <- scale(t(sig_coef_mat_non_zero[rowSums(abs(sig_coef_mat_non_zero)) != 0,]))
           } else {
-            mat <- t(sig_coef_mat_non_zero[rowSums(abs(sig_coef_mat_non_zero)) != 0,])
-            colnames(mat) <- rownames(sig_coef_mat_non_zero)[rowSums(abs(sig_coef_mat_non_zero)) != 0]
+            non_zero_rows <- rowSums(abs(sig_coef_mat_non_zero)) != 0
+            mat <- sig_coef_mat_non_zero[non_zero_rows, , drop = FALSE]  # drop=FALSEで1行でも行列として保持
+            mat <- t(mat)
+            colnames(mat) <- rownames(sig_coef_mat_non_zero)[non_zero_rows]
             mat <- scale(mat)
           }
 
