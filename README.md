@@ -62,7 +62,9 @@ result_CCPLS <- CCPLS::cellCellReg(exp_mat, coord_mat, annot_mat, output_dir, HV
 
 The outputs are stored in the ```output_dir```.
 
-![cell_type_B cell-IgA_heatmap](https://github.com/user-attachments/assets/03644eeb-52ff-4f20-9101-1a3467ac96eb)![cell_type_B cell-IgA_bipartite_graph](https://github.com/user-attachments/assets/11145ff4-be33-436a-81bb-c43360cd75b3)
+![cell_type_B cell-IgA_heatmap](https://github.com/user-attachments/assets/91d0c027-925e-4b9b-8444-f9c2203cd1b8)![cell_type_B cell-IgA_bipartite_graph](https://github.com/user-attachments/assets/706cc0f3-aab1-41eb-bac8-881a6790f305)
+
+
 
 ## Caution
  - Please do not use "/" (slash) in cell type names.
