@@ -29,8 +29,8 @@ buildModel <- function(data_4_pls,
 
     n_samples <- nrow(data_4_pls$feature)  # サンプル数
     n_genes <- ncol(data_4_pls$gene)     # 応答変数数（遺伝子数）
-    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / (n_samples * n_genes))
-    opt_comp_num <- as.double(which.min(RM_PRESS))
+    ov_RMSEP <- sqrt(colSums(res_pls$validation$PRESS) / (n_samples * n_genes))
+    opt_comp_num <- as.double(which.min(ov_RMSEP))
 
   } else if (cv_opt == "LOOCV") {
 
@@ -48,14 +48,14 @@ buildModel <- function(data_4_pls,
 
     n_samples <- nrow(data_4_pls$feature)  # サンプル数
     n_genes <- ncol(data_4_pls$gene)     # 応答変数数（遺伝子数）
-    RM_PRESS <- sqrt(colSums(res_pls$validation$PRESS) / (n_samples * n_genes))
-    opt_comp_num <- as.double(which.min(RM_PRESS))
+    ov_RMSEP <- sqrt(colSums(res_pls$validation$PRESS) / (n_samples * n_genes))
+    opt_comp_num <- as.double(which.min(ov_RMSEP))
 
   }
 
   return(list(res_pls = res_pls,
               opt_comp_num = opt_comp_num,
-              RM_PRESS = RM_PRESS))
+              ov_RMSEP = ov_RMSEP))
 
 }
 #' Estimate PLS regression model

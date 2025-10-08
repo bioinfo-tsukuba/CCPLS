@@ -1,6 +1,6 @@
 Package: CCPLS
 Title: CCPLS
-Version: 1.0.7
+Version: 1.0.8
 Authors@R: 
     person(given = "Takaho",
            family = "Tsuchiya",
@@ -12,8 +12,7 @@ License: Artistic-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Imports: dplyr, grDevices, pls, Seurat, stringr, ComplexHeatmap, igraph, circlize,
-        cluster, purrr, stats
+Imports: dplyr, grDevices, pls, Seurat, stringr, ComplexHeatmap, igraph, circlize, cluster, purrr, stats, Matrix
 NeedsCompilation: no
 Packaged: 2022-01-07 16:44:35 UTC; rstudio
 Author: Takaho Tsuchiya [aut, cre] (<https://orcid.org/0000-0001-7540-5115>)

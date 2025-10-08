@@ -9,26 +9,32 @@
 #' @importFrom Seurat VariableFeatures
 #' @importFrom Seurat ScaleData
 #' @importFrom dplyr %>%
+#' @importFrom Matrix Matrix
 #'
-performSeurat <- function(exp_mat, HVG_extract_num){  
+performSeurat <- function(exp_mat, HVG_extract_num){
+
+  to_dgC <- function(m) {
+    if (!inherits(m, "dgCMatrix")) Matrix::Matrix(m, sparse = TRUE) else m
+  }
+
   ### Convert to Seurat Object
-  seur_obj <- Seurat::CreateSeuratObject(counts = t(exp_mat))
-  
+  seur_obj <- Seurat::CreateSeuratObject(counts = to_dgC(t(exp_mat)))
+
   ### Normalize
   seur_obj <- Seurat::NormalizeData(seur_obj)
-  
+
   ### Identify Highly Variable Genes
   seur_obj <- Seurat::FindVariableFeatures(seur_obj, selection.method = "vst", nfeatures = HVG_extract_num)
-  
+
   HVG_list <- Seurat::VariableFeatures(seur_obj)
-  
+
   ### Scaling the data
   seur_obj <- Seurat::ScaleData(seur_obj)
-  
+
   ### Prepare expression matrix of HVG without using GetAssayData
-  exp_mat_seur <- as.matrix(seur_obj@assays$RNA$data[HVG_list,]) %>% 
+  exp_mat_seur <- as.matrix(seur_obj@assays$RNA$data[HVG_list,]) %>%
     t()
-  
+
   return(list(exp_mat_seur = exp_mat_seur,
               HVG_list = HVG_list))
 }

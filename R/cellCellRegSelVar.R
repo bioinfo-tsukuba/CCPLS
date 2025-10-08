@@ -192,71 +192,69 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
 
       # Get significant coefficient
       res.sig.coef <- sigCoef(res.pls = res.estimate$CCPLS_result[[cell_type_ind]][[2]],
-                             exp_mat_norm = scale(res.sep.mat$exp_mat_sep_list[[cell_type_ind]]),
-                             fet_mat_norm = res.sep.mat$fet_mat_sep_list[[cell_type_ind]])
+                              exp_mat_norm = scale(res.sep.mat$exp_mat_sep_list[[cell_type_ind]]),
+                              fet_mat_norm = res.sep.mat$fet_mat_sep_list[[cell_type_ind]])
 
       sig_coef_mat <- res.sig.coef$sig_coef_mat
       sig_coef_mat_raw <- res.sig.coef$sig_coef_mat_raw
 
       non_sig_fet_row <- which(rowSums(abs(sig_coef_mat)) == 0)
 
+      min_n <- 20
+
       sig_coef_mat_bin <- matrix(0, nrow(sig_coef_mat), ncol(sig_coef_mat))
       rownames(sig_coef_mat_bin) <- rownames(sig_coef_mat)
       colnames(sig_coef_mat_bin) <- colnames(sig_coef_mat)
 
-      for (fet_id in 1:nrow(sig_coef_mat)){
+      for (fet_id in 1:nrow(sig_coef_mat)) {
 
         non_sig_gene_col <- colnames(sig_coef_mat)[sig_coef_mat[fet_id, ] == 0]
         obs_vals <- sig_coef_mat[fet_id, ]
+        test_idx <- setdiff(seq_len(ncol(sig_coef_mat)),
+                            match(non_sig_gene_col, colnames(sig_coef_mat)))
 
-        if (length(non_sig_gene_col) >= 2) {
+        # 帰無サンプルを整形
+        null_vals <- as.numeric(sig_coef_mat_raw[fet_id, non_sig_gene_col])
+        null_vals <- null_vals[is.finite(null_vals)]
 
-          null_vals <- sig_coef_mat_raw[fet_id, non_sig_gene_col]
+        N0 <- length(null_vals)
+        G  <- length(test_idx)
 
-          if (sd(null_vals, na.rm = TRUE) > 0) {
-            # null_vals の分散が正である場合
-            center <- median(null_vals)
-            gene_p_vec_2 <- sapply(obs_vals, function(x) {
-              (sum(abs(null_vals - center) >= abs(x - center)) + 1) / (length(null_vals) + 1)
-            })
+        if (G == 0) {
 
-            names(gene_p_vec_2) <- colnames(sig_coef_mat)
+          sig_coef_mat_bin[fet_id, ] <- 0
 
-            gene_q_vec_2 <- stats::p.adjust(gene_p_vec_2, method = "BH")
+        } else if (N0 < min_n) {
 
-            sig_coef_vec_fet <- sig_coef_mat[fet_id, ]
-            sig_plus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet > 0
-            sig_minus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet < 0
+          # 帰無分布のサンプル不足
+          sig_coef_mat_bin[fet_id, ] <- 0
 
-            sig_coef_mat_bin[fet_id, sig_plus_flag] <- 1
-            sig_coef_mat_bin[fet_id, sig_minus_flag] <- -1
-            sig_coef_mat_bin[fet_id, non_sig_gene_col] <- 0
+        } else {
 
-          } else {
-            # sdがゼロの場合
-            gene_q_vec_2 <- rep(0, length(obs_vals))
-            names(gene_q_vec_2) <- colnames(sig_coef_mat_raw)
+          # non-parametric test
+          center <- stats::median(null_vals, na.rm = TRUE)
 
-            sig_coef_vec_fet <- sig_coef_mat[fet_id, ]
-            sig_plus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet > 0
-            sig_minus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet < 0
+          # central two-sided の経験的 p をテスト対象だけで
+          gene_p_vec_2 <- vapply(test_idx, function(j) {
+            x <- obs_vals[j]
+            if (!is.finite(x)) return(1)
+            r <- sum(abs(null_vals - center) >= abs(x - center))
+            (r + 1) / (length(null_vals) + 1)
+          }, numeric(1))
 
-            sig_coef_mat_bin[fet_id, sig_plus_flag] <- 1
-            sig_coef_mat_bin[fet_id, sig_minus_flag] <- -1
+          gene_q_vec_2 <- stats::p.adjust(gene_p_vec_2, method = "BH")
+
+          # q<0.05 ＆ 符号で方向付け
+          sig_coef_mat_bin[fet_id, ] <- 0
+          pos <- test_idx[gene_q_vec_2 < 0.05 & obs_vals[test_idx] > 0]
+          neg <- test_idx[gene_q_vec_2 < 0.05 & obs_vals[test_idx] < 0]
+          sig_coef_mat_bin[fet_id, pos] <-  1
+          sig_coef_mat_bin[fet_id, neg] <- -1
+
+          # 帰無に使った列は安全のため再度0
+          if (length(non_sig_gene_col) > 0) {
             sig_coef_mat_bin[fet_id, non_sig_gene_col] <- 0
           }
-
-        } else if (length(non_sig_gene_col) < 2){
-          gene_q_vec_2 <- rep(0, length(obs_vals))
-          names(gene_q_vec_2) <- colnames(sig_coef_mat_raw)
-
-          sig_coef_vec_fet <- sig_coef_mat[fet_id, ]
-          sig_plus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet > 0
-          sig_minus_flag <- gene_q_vec_2 < 0.05 & sig_coef_vec_fet < 0
-
-          sig_coef_mat_bin[fet_id, sig_plus_flag] <- 1
-          sig_coef_mat_bin[fet_id, sig_minus_flag] <- -1
-          sig_coef_mat_bin[fet_id, non_sig_gene_col] <- 0
         }
       }
 
@@ -272,7 +270,7 @@ cellCellRegSelVar <- function(res.estimate = res.estimate,
 
       sig_coef_mat_non_zero_list[[cell_type_ind]] <- sig_coef_mat_non_zero
 
-      all_zero_flag <- sum(sig_coef_mat_bin_2) == 0
+      all_zero_flag <- sum(abs(sig_coef_mat_bin_2)) == 0
       all_zero_flag_list[[cell_type_ind]] <- all_zero_flag
 
       if (!all_zero_flag){

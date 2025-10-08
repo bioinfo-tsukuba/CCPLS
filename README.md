@@ -5,7 +5,7 @@ R package for estimating cell-cell communications from spatial transcriptome dat
 Please see [the paper of CCPLS](https://academic.oup.com/bioinformatics/article/38/21/4868/6692423) for details.
 
 ## Version
- - v1.0.7
+ - v1.0.8
 
 ## Getting started
 
@@ -21,7 +21,7 @@ if (!requireNamespace("BiocManager", quietly = TRUE))
 BiocManager::install("ComplexHeatmap")
 # Install CCPLS
 install.packages("devtools", dependencies = TRUE)
-devtools::install_github("bioinfo-tsukuba/CCPLS@v1.0.7")
+devtools::install_github("bioinfo-tsukuba/CCPLS@v1.0.8")
  ```
 
 ### Quick example
